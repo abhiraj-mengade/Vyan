@@ -134,6 +134,23 @@ export default function StationInterface() {
     }
   }, [sessionState, currentSession]);
 
+  // Prototype: auto-complete to success after 15 seconds on waiting
+  useEffect(() => {
+    if (sessionState === 'waiting' && currentSession) {
+      const toSuccess = setTimeout(() => {
+        setSessionState('success');
+        setAvailableBatteries(prev => prev - 1);
+        // Return to idle automatically after a short delay
+        const toIdle = setTimeout(() => {
+          setSessionState('idle');
+          setCurrentSession(null);
+        }, 8000);
+        return () => clearTimeout(toIdle);
+      }, 15000);
+      return () => clearTimeout(toSuccess);
+    }
+  }, [sessionState, currentSession]);
+
   const generateQRCode = async (): Promise<string> => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
     const stationId = process.env.NEXT_PUBLIC_STATION_ID || '1';
@@ -350,17 +367,19 @@ function Header() {
         <img 
           src="/logo.png" 
           alt="Vyan Logo" 
-          className="h-12 w-auto"
+          className="h-14 w-auto"
         />
         <div className="text-left">
-          <h1 className="text-neutral-200 text-2xl font-bold tracking-tight">Vyan</h1>
-          <p className="text-neutral-400 text-sm font-medium">
+          <h1 className="text-neutral-200 text-3xl font-bold tracking-tight">Vyan</h1>
+          <p className="text-neutral-400 text-sm">비얀</p>
+          <p className="text-neutral-400 text-sm font-medium mt-0.5">
             Battery Station #{process.env.NEXT_PUBLIC_STATION_ID || "1"}
           </p>
         </div>
       </div>
       
       <div className="flex space-x-3 items-center">
+        <span className="text-neutral-300 text-sm mr-2">Prototype</span>
         <div className={`w-3 h-3 rounded-full shadow-neuro-dark-outset ${
           isOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'
         }`}></div>
