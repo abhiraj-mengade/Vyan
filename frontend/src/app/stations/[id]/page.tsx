@@ -98,6 +98,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
     try {
       setCameraError(null);
       setIsScanning(true);
+      
       // Prototype: auto-complete scanning after 6 seconds and show success
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
@@ -114,39 +115,11 @@ export default function StationDetailPage({ params }: { params: { id: string } }
           setIsProcessingPayment(false);
           setPaymentSuccessful(true);
         } catch {}
-      }, 6000);
+      }, 10000);
       
-      // Dynamically import QR Scanner to avoid SSR issues
-      const QrScanner = (await import('qr-scanner')).default;
+      // Prototype: Skip actual camera setup and QR scanning
+      // Just show the scanning UI for 6 seconds
       
-      // Request camera access
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: 'environment', // Prefer back camera on mobile
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        } 
-      });
-      
-      streamRef.current = stream;
-      
-      // Wait for video to be ready
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          // Initialize QR Scanner
-          qrScannerRef.current = new QrScanner(
-            videoRef.current!,
-            (result) => handleQRScanResult(result.data),
-            {
-              highlightScanRegion: true,
-              highlightCodeOutline: true,
-              preferredCamera: 'environment'
-            }
-          );
-          qrScannerRef.current.start();
-        };
-      }
     } catch (error) {
       console.error('Camera access error:', error);
       setCameraError('Unable to access camera. Please check permissions.');
@@ -183,56 +156,17 @@ export default function StationDetailPage({ params }: { params: { id: string } }
       setQrResult(qrData);
       console.log('QR Scanned:', qrData);
       
-      // Parse QR data (JSON from station interface backend)
-      const qrInfo = JSON.parse(qrData);
-      console.log('Parsed QR Info:', qrInfo);
-      
-      // Handle both field naming conventions
-      const stationId = qrInfo.stationId || qrInfo.station_id;
-      const token = qrInfo.token;
-      const expiresAt = qrInfo.expiresAt || qrInfo.expires_at;
-      
-      if (!stationId || !token || !expiresAt) {
-        console.error('Missing fields in QR:', { stationId, token, expiresAt });
-        throw new Error('Invalid QR code format - missing required fields');
-      }
-      
-      // Check if token has expired
-      if (Date.now() > expiresAt) {
-        throw new Error('QR code has expired');
-      }
-      
-      setScannedStationId(stationId);
-      
-      // Stop camera
-      stopCamera();
-      
-      // Start session with backend
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-      const sessionResponse = await fetch(`${backendUrl}/session/start`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          stationId,
-          userId: account?.address || 'anonymous', // Use wallet address as user ID
-          token,
-          expiresAt
-        }),
-      });
-      
-      if (!sessionResponse.ok) {
-        const errorData = await sessionResponse.json();
-        throw new Error(errorData.error || 'Failed to start session');
-      }
-      
-      const sessionData = await sessionResponse.json();
-      setSessionId(sessionData.sessionId);
-      
-      // Load station details and calculate fee
-      await loadStationDetails(stationId);
-      
-      // Proceed to next step
+      // Prototype: Skip backend calls and just proceed
+      setScannedStationId(params.id);
       setHasScanned(true);
+      setBatteryInserted(true);
+      setBatteryReady(true);
+      const fee = BigInt("1500000000000000");
+      setSwapFee(fee);
+      setFinalSwapFee(fee);
+      setTransactionHash(`#SWP-${Date.now().toString().slice(-8)}`);
+      setIsProcessingPayment(false);
+      setPaymentSuccessful(true);
       
     } catch (error) {
       console.error('QR scan error:', error);
