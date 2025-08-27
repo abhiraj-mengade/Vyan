@@ -18,7 +18,7 @@ function StationInfoCard({ title, subtitle, className = "flex-1" }: {
 }) {
   return (
     <div className={`bg-custom-bg-shadow-dark rounded-lg shadow-neuro-dark-deep p-4 ${className} flex flex-col justify-center items-center text-center`}>
-      <div className="text-emerald-600 text-2xl mb-1">{subtitle}</div>
+      <div className="text-emerald-600 text-lg sm:text-xl mb-1 truncate">{subtitle}</div>
       <div className="text-neutral-400 text-xs font-medium">{title}</div>
     </div>
   );
@@ -58,6 +58,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const qrScannerRef = useRef<any | null>(null);
   const isDragging = useRef(false);
+  const [batteryPercentage, setBatteryPercentage] = useState<number>(30);
 
   // Cleanup camera on unmount (must be before any conditional returns)
   useEffect(() => {
@@ -167,17 +168,17 @@ export default function StationDetailPage({ params }: { params: { id: string } }
       // For prototype: any QR is accepted; proceed to swipe-to-pay
       setScannedStationId(params.id);
       stopCamera();
-      
+
       // Load station details and fee for display
       await loadStationDetails(params.id);
 
       // Populate a demo KRW balance
       await checkUserBalance();
 
-      // Move to the next step (show slider UI)
+      // Move to the next step (show slider UI gated by battery insertion)
       setHasScanned(true);
-      setBatteryInserted(true);
-      setBatteryReady(true);
+      setBatteryInserted(false);
+      setBatteryReady(false);
       setIsProcessingPayment(false);
       setPaymentSuccessful(false);
     } catch (error) {
@@ -496,14 +497,14 @@ export default function StationDetailPage({ params }: { params: { id: string } }
             </div>
 
             {/* Main Content: Battery + Info Cards */}
-            <div className="flex space-x-8 p-6">
+            <div className="flex space-x-6 px-6">
               {/* Left Half: Animated Battery */}
               <div className="flex-1 flex items-end justify-center">
-                <AnimatedBattery percentage={station.percentage || Math.round((station.charged / station.total) * 100)} />
+                <AnimatedBattery percentage={batteryPercentage} />
               </div>
               
               {/* Right Half: Three Info Cards */}
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-3">
                 <StationInfoCard
                   title="Available Batteries"
                   subtitle={`${station.availableBatteries || station.charged}/${station.totalSlots || station.total}`}
@@ -515,15 +516,15 @@ export default function StationDetailPage({ params }: { params: { id: string } }
                   className="w-full h-20"
                 />
                 <StationInfoCard
-                  title="KRW Swap Token"
+                  title="KRW Token"
                   subtitle={`${(Number(userBalance) / 1e18).toFixed(2)} KRW`}
                   className="w-full h-20"
                 />
-                <StationInfoCard
+                {/* <StationInfoCard
                   title="Tokens Earned"
-                  subtitle={"+10 KRW Swap"}
+                  subtitle={"+10 KRW"}
                   className="w-full h-20"
-                />
+                /> */}
               </div>
             </div>
 
@@ -713,10 +714,10 @@ export default function StationDetailPage({ params }: { params: { id: string } }
         </div>
 
         {/* Main Content: Battery + Info Cards */}
-        <div className="flex space-x-8 p-6">
+        <div className="flex space-x-6 px-6">
           {/* Left Half: Animated Battery */}
           <div className="flex-1 flex items-end justify-center">
-            <AnimatedBattery percentage={station.percentage || Math.round((station.charged / station.total) * 100)} />
+            <AnimatedBattery percentage={batteryPercentage} />
           </div>
           
           {/* Right Half: Three Info Cards */}
@@ -732,15 +733,15 @@ export default function StationDetailPage({ params }: { params: { id: string } }
               className="w-full h-20"
             />
             <StationInfoCard
-              title="KRW Swap Token"
+              title="KRW Token"
               subtitle={`${(Number(userBalance) / 1e18).toFixed(2)} KRW`}
               className="w-full h-20"
             />
-            <StationInfoCard
+            {/* <StationInfoCard
               title="Tokens Earned"
-              subtitle={"+10 SWAP"}
+              subtitle={"+10 KRW"}
               className="w-full h-20"
-            />
+            /> */}
           </div>
         </div>
 
@@ -755,7 +756,17 @@ export default function StationDetailPage({ params }: { params: { id: string } }
 
         {/* Draggable Slider Component */}
         <div className="pt-6">
-          {isProcessingPayment ? (
+          {!batteryInserted ? (
+            <div className="text-center">
+              <button
+                onClick={handleBatteryInserted}
+                className="bg-custom-bg-shadow-dark hover:bg-custom-bg-dark text-emerald-400 text-sm hover:text-emerald-300 px-8 py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 mx-auto shadow-neuro-dark-outset hover:shadow-neuro-dark-pressed border border-custom-bg-light/20"
+              >
+                <TbBattery className="w-5 h-5" />
+                <span>Battery Inserted</span>
+              </button>
+            </div>
+          ) : isProcessingPayment ? (
             <div className="text-center p-6 bg-blue-900/20 border border-blue-500/30 rounded-xl">
               <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
               <p className="text-blue-400 text-sm font-medium">Processing Payment...</p>

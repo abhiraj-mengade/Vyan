@@ -228,18 +228,14 @@ function StationsView() {
   const [truckPositions, setTruckPositions] = useState<{[key: string]: number}>({});
   const [toasts, setToasts] = useState<{id: string, message: string, type: string}[]>([]);
   const [viewState, setViewState] = useState({
-    longitude: 77.5959,
-    latitude: 12.9762,
-    zoom: 10,
+    longitude: 126.9780,
+    latitude: 37.5665,
+    zoom: 11,
   });
   const [routesVisible, setRoutesVisible] = useState(false);
 
   // Use demo static stations
-  const [stations, setStations] = useState<Station[]>([
-    { id: "1", name: "MG Road", location: "Bengaluru", total: 20, charged: 12, status: "ok", coordinates: [77.5946, 12.9716] },
-    { id: "2", name: "Koramangala", location: "Bengaluru", total: 18, charged: 5, status: "at-risk", coordinates: [77.6226, 12.9352] },
-    { id: "3", name: "Whitefield", location: "Bengaluru", total: 22, charged: 0, status: "shortage", coordinates: [77.7500, 12.9698] },
-  ] as any);
+  const [stations, setStations] = useState<Station[]>(STATIONS as Station[]);
 
   // Show AI routes after a short delay for prototype effect
   useEffect(() => {
@@ -870,7 +866,7 @@ function StationCard({
       <div className="flex items-center justify-between mb-3">
         <div>
           <h4 className="text-neutral-200 font-semibold flex items-center space-x-2">
-            <span>Station {station.id}</span>
+            <span>{station.name}</span>
             {station.predictedEmptyIn && (
               <div className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                 station.predictedEmptyIn === "CRITICAL" 

@@ -5,6 +5,18 @@ interface AnimatedBatteryProps {
 }
 
 export default function AnimatedBattery({ percentage }: AnimatedBatteryProps) {
+  const isLow = percentage < 50;
+  const fluidGradient = isLow
+    ? "bg-gradient-to-t from-red-700 via-red-800 to-red-900"
+    : "bg-gradient-to-t from-emerald-700 via-emerald-800 to-emerald-900";
+  const waveTop1 = isLow ? "from-red-600/40" : "from-emerald-600/40";
+  const waveTop2 = isLow ? "from-red-500/30" : "from-emerald-500/30";
+  const waveTop3 = isLow ? "from-red-400/20" : "from-emerald-400/20";
+  const particle1 = isLow ? "bg-red-500/60" : "bg-emerald-500/60";
+  const particle2 = isLow ? "bg-red-600/50" : "bg-emerald-600/50";
+  const particle3 = isLow ? "bg-red-500/40" : "bg-emerald-500/40";
+  const percentText = isLow ? "text-red-400" : "text-neutral-200";
+
   return (
     <div className="relative w-32 h-64">
       {/* Battery Outline */}
@@ -16,27 +28,27 @@ export default function AnimatedBattery({ percentage }: AnimatedBatteryProps) {
         <div className="absolute inset-2 rounded-xl overflow-hidden">
           {/* Battery Fluid with Enhanced Wave Animation */}
           <div 
-            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-emerald-700 via-emerald-800 to-emerald-900 transition-all duration-1000 ease-out"
+            className={`absolute bottom-0 left-0 right-0 ${fluidGradient} transition-all duration-1000 ease-out`}
             style={{ 
               height: `${percentage}%`,
               animation: 'fluidWave 4s ease-in-out infinite'
             }}
           >
             {/* Multiple Wave Layers for More Dynamic Effect */}
-            <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-emerald-600/40 to-transparent rounded-t-full animate-pulse"></div>
-            <div className="absolute top-2 left-0 right-0 h-2 bg-gradient-to-b from-emerald-500/30 to-transparent rounded-t-full" style={{ animation: 'waveMove 3s ease-in-out infinite' }}></div>
-            <div className="absolute top-4 left-0 right-0 h-1 bg-gradient-to-b from-emerald-400/20 to-transparent rounded-t-full" style={{ animation: 'waveMove 2.5s ease-in-out infinite reverse' }}></div>
+            <div className={`absolute top-0 left-0 right-0 h-3 bg-gradient-to-b ${waveTop1} to-transparent rounded-t-full animate-pulse`}></div>
+            <div className={`absolute top-2 left-0 right-0 h-2 bg-gradient-to-b ${waveTop2} to-transparent rounded-t-full`} style={{ animation: 'waveMove 3s ease-in-out infinite' }}></div>
+            <div className={`absolute top-4 left-0 right-0 h-1 bg-gradient-to-b ${waveTop3} to-transparent rounded-t-full`} style={{ animation: 'waveMove 2.5s ease-in-out infinite reverse' }}></div>
             
             {/* Floating Particles Effect */}
-            <div className="absolute top-2 left-1/4 w-1 h-1 bg-emerald-500/60 rounded-full" style={{ animation: 'floatUp 6s ease-in-out infinite' }}></div>
-            <div className="absolute top-4 right-1/3 w-1.5 h-1.5 bg-emerald-600/50 rounded-full" style={{ animation: 'floatUp 5s ease-in-out infinite 1s' }}></div>
-            <div className="absolute top-6 left-1/2 w-1 h-1 bg-emerald-500/40 rounded-full" style={{ animation: 'floatUp 7s ease-in-out infinite 2s' }}></div>
+            <div className={`absolute top-2 left-1/4 w-1 h-1 ${particle1} rounded-full`} style={{ animation: 'floatUp 6s ease-in-out infinite' }}></div>
+            <div className={`absolute top-4 right-1/3 w-1.5 h-1.5 ${particle2} rounded-full`} style={{ animation: 'floatUp 5s ease-in-out infinite 1s' }}></div>
+            <div className={`absolute top-6 left-1/2 w-1 h-1 ${particle3} rounded-full`} style={{ animation: 'floatUp 7s ease-in-out infinite 2s' }}></div>
           </div>
         </div>
         
         {/* Battery Percentage Text */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-neutral-200 text-lg z-10">{percentage}%</span>
+          <span className={`${percentText} text-lg z-10`}>{percentage}%</span>
         </div>
       </div>
       

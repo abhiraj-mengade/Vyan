@@ -134,7 +134,7 @@ export default function StationInterface() {
     }
   }, [sessionState, currentSession]);
 
-  // Prototype: auto-complete to success after 15 seconds on waiting
+  // Prototype: auto-complete to success after 60 seconds on waiting
   useEffect(() => {
     if (sessionState === 'waiting' && currentSession) {
       const toSuccess = setTimeout(() => {
@@ -146,7 +146,7 @@ export default function StationInterface() {
           setCurrentSession(null);
         }, 8000);
         return () => clearTimeout(toIdle);
-      }, 15000);
+      }, 60000);
       return () => clearTimeout(toSuccess);
     }
   }, [sessionState, currentSession]);
@@ -623,7 +623,7 @@ function SuccessState() {
         <div className="bg-custom-bg-light shadow-neuro-dark-inset rounded-xl p-4 space-y-3 mb-6">
           <div className="flex justify-between items-center">
             <span className="text-neutral-400 text-sm">Tokens Earned</span>
-            <span className="text-green-400 font-bold text-lg">+10 SWAP</span>
+            <span className="text-green-400 font-bold text-lg">+10 KRW</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-neutral-400 text-sm">Battery Released</span>

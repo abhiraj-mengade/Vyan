@@ -18,8 +18,8 @@ import { useStations } from "@/hooks/useStations";
 
 export default function MobileDashboard() {
   const [viewState, setViewState] = useState({
-    longitude: 77.5959,
-    latitude: 12.9762,
+    longitude: 126.9780,
+    latitude: 37.5665,
     zoom: 11,
   });
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
@@ -170,12 +170,14 @@ function WeatherFavoriteSection() {
       <div className="grid grid-cols-2 gap-5">
         {/* Weather Card */}
         <div className="bg-custom-bg-shadow-dark shadow-neuro-dark-deep rounded-xl p-3">
-          <div className="flex items-center space-x-1 mb-1">
-            <TbCloud className="w-4 h-4 text-blue-400" />
-            <span className="text-neutral-400 text-xs">Bengaluru, India</span>
+          <div className="flex flex-col justify-between h-full">
+            <div className="flex items-center space-x-1">
+              <TbCloud className="w-4 h-4 text-blue-400" />
+              <span className="text-neutral-400 text-xs">Seoul, South Korea</span>
+            </div>
+            <div className="text-neutral-200 text-xl font-bold">23°C</div>
+            <div className="text-neutral-500 text-xs">Day 27°C • Night 20°C</div>
           </div>
-          <div className="text-neutral-200 text-xl font-bold mb-0.5">23°C</div>
-          <div className="text-neutral-500 text-xs">Day 27°C • Night 20°C</div>
         </div>
 
         {/* Favorite Station Card */}
@@ -185,10 +187,10 @@ function WeatherFavoriteSection() {
             <span className="text-neutral-400 text-xs">Favorite station</span>
           </div>
           <div className="text-neutral-200 font-semibold text-sm mb-0.5">
-            Cubbon Park...
+            Gwanghwamun EV Hub
           </div>
-          <div className="text-neutral-500 text-xs">Cubbon Park</div>
-          <div className="text-emerald-400 text-xs font-medium">4 km</div>
+          <div className="text-neutral-500 text-xs">Jongno-gu</div>
+          <div className="text-emerald-400 text-xs font-medium">0.3 km</div>
         </div>
       </div>
     </div>
