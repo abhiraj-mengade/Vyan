@@ -1,6 +1,7 @@
 # ⚡️ Vyan — A De-PIN for EV Battery Swapping
 
-- [Vyan Whitepaper](Vyan_Whitepaper.pdf)
+- [Whitepaper](Vyan_Whitepaper.pdf)
+- [Pitch Deck](https://www.canva.com/design/DAGxPu4Eaqo/VcGGmNVwWiRtqdBv_y-ZtA/view?utm_content=DAGxPu4Eaqo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h64bea47428)
 
 
 ## Table of Contents
@@ -9,11 +10,12 @@
 - [Problem](#problem)
 - [Solution](#solution)
 - [System Flow](#system-flow)
-- [Learn More](#learn-more)
+    - [User Journey and Battery Swap](#user-journey-and-battery-swap)
+    - [Operator Journey and Battery Rebalancing](#operator-journey-and-battery-rebalancing)
 - [Contributing](#contributing)
 - [Authors](#authors)
 
-## Overview
+## Overview 📄
 
 **Vyan** is a decentralized battery-swapping network designed for dense urban environments in South Korea. It combines **IoT-enabled swap stations, an on-chain battery registry (De-PIN), and AI-driven inventory rebalancing**.  
 All payments and rewards are powered by a **KRW-pegged stablecoin**, making adoption seamless for local users.  
@@ -22,28 +24,58 @@ Vyan reduces **range anxiety** and **operating costs** for EV owners and fleet o
 
 ---
 
-## 🤔 Problem
-Despite incentives, EV adoption in Korea faces barriers:
-- Charging bottlenecks → Long charging times & costly infrastructure.  
-- Battery trust issues → No transparent audit trail for usage/valuation.  
-- Inventory imbalance → Uneven distribution of charged batteries across stations.  
-- Renewable attribution → Lack of reliable tracking for green charging.  
-- Ecosystem silos → Vendor lock-in and poor interoperability.  
+## Problem 🤔
+
+- **Battery provenance and valuation**:  
+  The value of a battery is highly dependent on its usage history—including age, charge/discharge cycles, and thermal stress.  
+  Without reliable audit trails, users and operators face uncertainty in pricing and valuation, leading to inefficiency and mistrust.
+
+- **Centrally controllable pricing**:  
+  Fleet operators have central control over pricing of swaps and can dictate the pricing without the user knowing about it.
+
+- **Inventory and rebalancing**:  
+  Swap stations require a reliable supply of fully charged batteries, but demand fluctuates across locations and times.  
+  Managing inventory and rebalancing stock between stations is logistically complex and cost-intensive.
+
+- **Renewable attribution**:  
+  EVs are only environmentally sustainable if the electricity used for charging is itself renewable.  
+  Tracking and verifying renewable energy usage requires trusted data sources, reliable meter attestations, and careful oracle design.
+
+- **Ecosystem coordination**:  
+  A scalable battery swapping network requires cooperation between hardware manufacturers, software providers, and operators.  
+  Existing systems are often siloed, with vendor lock-in and lack of interoperability slowing ecosystem growth.
 
 ---
 
-## 💡 Solution
-Vyan addresses these challenges with a **decentralized, AI + blockchain–powered approach**:
+## Solution 💡
 
-- **On-chain Identity (De-PIN):** Transparent battery + station metadata stored immutably.  
-- **IoT Telemetry:** Stations stream signed data on charging, temperature, and renewable sources.  
-- **AI Inventory Agent:** Forecasts demand, optimizes battery rebalancing, and cuts downtime.  
-- **KRW Stablecoin:** Seamless payments & programmable rewards for green charging.  
-- **User-Friendly Wallets:** Account abstraction for a Web2-like experience.  
+Vyan proposes a decentralized EV battery swapping ecosystem that integrates **blockchain, IoT, and AI** to address these challenges.  
+By combining these technologies, Vyan ensures transparency, efficiency, and scalability in a way that centralized solutions cannot.
+
+- **On-chain battery and station identity (De-PIN)**:  
+  Each battery and station is assigned a cryptographic identity, with metadata such as battery age, cycle count, and provenance stored immutably on-chain.  
+  This ensures transparency, prevents tampering, and enables fair valuation during swaps.
+
+- **IoT-enabled stations with signed telemetry**:  
+  Stations are equipped with IoT modules that capture and sign real-time data on charging events, temperature, and energy source attribution.  
+  This data is transmitted securely to the blockchain, building trust in the accuracy of operational information.
+
+- **AI inventory agent for demand forecasting and rebalancing**:  
+  An AI-powered agent continuously monitors swap events, analyzes demand patterns, and generates rebalancing strategies.  
+  By considering proximity, traffic, renewable availability, and historical demand, the AI agent optimizes fleet-wide battery allocation, reducing operational costs and downtime.
+
+- **KRW stablecoin for payments and rewards**:  
+  Transactions are settled using the Korean Won–backed stablecoin, ensuring price stability and widespread use for real world utility.  
+  This makes payments seamless for consumers while enabling programmable financial incentives.
+
+- **Account abstraction wallets**:  
+  To lower barriers for mainstream users, Vyan employs account abstraction and custodial wallets, ensuring a Web2-native user experience.  
+  Users can interact with the system without needing deep blockchain knowledge.
+
 
 ---
 
-## 📊 System Flow
+## System Flow 📊
 
 ### 1. User Journey and Battery Swap
 ```mermaid
@@ -108,11 +140,11 @@ sequenceDiagram
     end
 ```
 
-## 🤝 Contributing
+## Contributing 🤝
 
 Contributions are welcome! Please feel free to submit a pull request.
 
-## ✍️ Authors
+## Authors ✍️
 
 - [Parth Mittal](https://github.com/mittal-parth)
 - [Abhiraj Mengade](https://github.com/abhiraj-mengade)
