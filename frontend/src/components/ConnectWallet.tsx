@@ -1,23 +1,20 @@
 "use client";
 
-import { TbUser } from "react-icons/tb";
+import { ConnectButton } from "thirdweb/react";
+import { createThirdwebClient } from "thirdweb";
 
+const client = createThirdwebClient({
+  clientId: "5bf6a603d32597c76b2e972e715a2423",
+});
 
 interface ConnectWalletProps {
   className?: string;
 }
 
 export function ConnectWallet({ className = "" }: ConnectWalletProps) {
-  const account = undefined as any;
-  
   return (
     <div className={`relative ${className}`}>
-      <div className="w-12 h-12 rounded-2xl bg-custom-bg-light shadow-neuro-dark-outset flex items-center justify-center">
-        <TbUser className="w-6 h-6 text-neutral-400" />
-      </div>
-      {!account && (
-        <TbUser className="absolute inset-0 w-6 h-6 text-neutral-400 pointer-events-none m-auto" />
-      )}
+      <ConnectButton client={client} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ConnectWallet } from "./ConnectWallet";
 
 interface HeaderProps {
   title?: string;
@@ -30,8 +31,8 @@ export function Header({
         </div>
       </Link>
       
-      {/* Prototype: no wallet */}
-      <div className="text-neutral-300 text-sm">Prototype</div>
+      {/* Wallet Connect */}
+      <ConnectWallet />
     </div>
   );
 }
