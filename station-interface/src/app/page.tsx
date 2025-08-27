@@ -379,7 +379,6 @@ function Header() {
       </div>
       
       <div className="flex space-x-3 items-center">
-        <span className="text-neutral-300 text-sm mr-2">Prototype</span>
         <div className={`w-3 h-3 rounded-full shadow-neuro-dark-outset ${
           isOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'
         }`}></div>

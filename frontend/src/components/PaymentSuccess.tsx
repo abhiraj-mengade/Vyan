@@ -23,8 +23,8 @@ export default function PaymentSuccess({
     ? `SWP-${transactionHash.replace(/[^a-zA-Z0-9]/g, '').slice(-12)}` 
     : `SWP-${Date.now().toString().slice(-10)}`;
   const computedAmount = swapFee 
-    ? `${Math.max(1, Math.round(Number(swapFee) / 1e18)).toString()} KRW` 
-    : `1,500 KRW`;
+    ? `${(Number(swapFee) / 1e18).toFixed(0)} KRW` 
+    : `212 KRW`;
   const computedStationId = stationId || '1';
   const computedBatteryId = batteryId ? `#${batteryId}` : '#202';
 

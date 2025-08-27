@@ -39,7 +39,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
   const [qrResult, setQrResult] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [scannedStationId, setScannedStationId] = useState<string | null>(null);
-  const [swapFee, setSwapFee] = useState<bigint>(BigInt(0));
+  const [swapFee, setSwapFee] = useState<bigint>(BigInt("212000000000000000000"));
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [userBatteryId, setUserBatteryId] = useState<bigint | null>(null);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
@@ -48,7 +48,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
     currentCharge: '15',
     healthScore: '85'
   });
-  const [userBalance, setUserBalance] = useState<bigint>(BigInt(0));
+  const [userBalance, setUserBalance] = useState<bigint>(BigInt("960000000000000000000"));
   const [showInsufficientFunds, setShowInsufficientFunds] = useState(false);
   const [transactionHash, setTransactionHash] = useState<string>('');
   const [finalSwapFee, setFinalSwapFee] = useState<bigint>(BigInt(0));
@@ -99,27 +99,37 @@ export default function StationDetailPage({ params }: { params: { id: string } }
       setCameraError(null);
       setIsScanning(true);
       
-      // Prototype: auto-complete scanning after 6 seconds and show success
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        try {
-          stopCamera();
-          setHasScanned(true);
-          setScannedStationId(params.id);
-          setBatteryInserted(true);
-          setBatteryReady(true);
-          const fee = BigInt("1500000000000000");
-          setSwapFee(fee);
-          setFinalSwapFee(fee);
-          setTransactionHash(`#SWP-${Date.now().toString().slice(-8)}`);
-          setIsProcessingPayment(false);
-          setPaymentSuccessful(true);
-        } catch {}
-      }, 10000);
+      // Dynamically import QR Scanner to avoid SSR issues
+      const QrScanner = (await import('qr-scanner')).default;
       
-      // Prototype: Skip actual camera setup and QR scanning
-      // Just show the scanning UI for 6 seconds
+      // Request camera access
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
       
+      streamRef.current = stream;
+      
+      // Wait for video to be ready
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.onloadedmetadata = () => {
+          // Initialize QR Scanner
+          qrScannerRef.current = new QrScanner(
+            videoRef.current!,
+            (result) => handleQRScanResult(result.data),
+            {
+              highlightScanRegion: true,
+              highlightCodeOutline: true,
+              preferredCamera: 'environment'
+            }
+          );
+          qrScannerRef.current.start();
+        };
+      }
     } catch (error) {
       console.error('Camera access error:', error);
       setCameraError('Unable to access camera. Please check permissions.');
@@ -154,20 +164,22 @@ export default function StationDetailPage({ params }: { params: { id: string } }
   const handleQRScanResult = async (qrData: string) => {
     try {
       setQrResult(qrData);
-      console.log('QR Scanned:', qrData);
-      
-      // Prototype: Skip backend calls and just proceed
+      // For prototype: any QR is accepted; proceed to swipe-to-pay
       setScannedStationId(params.id);
+      stopCamera();
+      
+      // Load station details and fee for display
+      await loadStationDetails(params.id);
+
+      // Populate a demo KRW balance
+      await checkUserBalance();
+
+      // Move to the next step (show slider UI)
       setHasScanned(true);
       setBatteryInserted(true);
       setBatteryReady(true);
-      const fee = BigInt("1500000000000000");
-      setSwapFee(fee);
-      setFinalSwapFee(fee);
-      setTransactionHash(`#SWP-${Date.now().toString().slice(-8)}`);
       setIsProcessingPayment(false);
-      setPaymentSuccessful(true);
-      
+      setPaymentSuccessful(false);
     } catch (error) {
       console.error('QR scan error:', error);
       setCameraError(error instanceof Error ? error.message : 'Failed to process QR code');
@@ -177,15 +189,15 @@ export default function StationDetailPage({ params }: { params: { id: string } }
 
   const checkUserBalance = async () => {
     // prototype: return fixed balance
-    const balance = BigInt("5000000000000000000"); // 5 KRW units (display scaled)
+    const balance = BigInt("960000000000000000000"); // 960 KRW units (display scaled)
         setUserBalance(balance);
         return balance;
   };
 
   const loadStationDetails = async (stationId: string) => {
     // prototype: simulate fee calculation
-    await new Promise(r => setTimeout(r, 600));
-    setSwapFee(BigInt("1500000000000000")); // display as KRW
+    await new Promise(r => setTimeout(r, 300));
+    setSwapFee(BigInt("212000000000000000000")); // 212 KRW
     setUserBatteryId(BigInt(101));
   };
 
@@ -228,7 +240,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
   };
 
   const handleSwapPayment = async () => {
-    if (!scannedStationId || !sessionId) {
+    if (!scannedStationId) {
       setCameraError('Invalid session. Please scan QR code again.');
       setIsSliderActive(false);
       setSliderPosition(0);
@@ -238,57 +250,24 @@ export default function StationDetailPage({ params }: { params: { id: string } }
     try {
       setIsProcessingPayment(true);
       setShowToast(true);
-      await new Promise(r => setTimeout(r, 1000));
-      const currentBalance = await checkUserBalance();
-      if (!userBatteryId) {
-        throw new Error('No battery available for swap. Please register a battery first.');
-      }
-      const feeWithBuffer = swapFee;
+      await new Promise(r => setTimeout(r, 600));
       setTransactionHash(`#SWP-${Date.now().toString().slice(-8)}`);
-      setFinalSwapFee(feeWithBuffer);
-      
-      // Update session status to payment_confirmed with real transaction hash
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-      await fetch(`${backendUrl}/session/update`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          status: 'payment_confirmed',
-          transactionHash: `demo-${Date.now()}`,
-          batterySlot: 'A-7'
-        }),
-      });
-      
-      console.log('Session updated with transaction hash');
+      setFinalSwapFee(swapFee);
       
       // Reset slider and show success
       setIsSliderActive(false);
       setSliderPosition(0);
       setIsProcessingPayment(false);
       
-      // Show payment success after toast
       setTimeout(() => {
         setPaymentSuccessful(true);
-      }, 1000);
-      
+      }, 400);
     } catch (error) {
       console.error('Payment failed:', error);
       setIsSliderActive(false);
       setSliderPosition(0);
       setIsProcessingPayment(false);
-      
-      if (error instanceof Error) {
-        if (error.message.includes('User rejected')) {
-          setCameraError('Transaction cancelled by user.');
-        } else if (error.message.includes('insufficient funds')) {
-          setCameraError('Insufficient funds for transaction.');
-        } else {
-          setCameraError(`Transaction failed: ${error.message}`);
-        }
-      } else {
         setCameraError('Transaction failed. Please try again.');
-      }
     }
   };
 
@@ -536,8 +515,13 @@ export default function StationDetailPage({ params }: { params: { id: string } }
                   className="w-full h-20"
                 />
                 <StationInfoCard
-                  title="Wallet Balance"
-                  subtitle="150 STK"
+                  title="KRW Swap Token"
+                  subtitle={`${(Number(userBalance) / 1e18).toFixed(2)} KRW`}
+                  className="w-full h-20"
+                />
+                <StationInfoCard
+                  title="Tokens Earned"
+                  subtitle={"+10 KRW Swap"}
                   className="w-full h-20"
                 />
               </div>
@@ -748,8 +732,13 @@ export default function StationDetailPage({ params }: { params: { id: string } }
               className="w-full h-20"
             />
             <StationInfoCard
-              title="Wallet Balance"
-              subtitle="150 STK"
+              title="KRW Swap Token"
+              subtitle={`${(Number(userBalance) / 1e18).toFixed(2)} KRW`}
+              className="w-full h-20"
+            />
+            <StationInfoCard
+              title="Tokens Earned"
+              subtitle={"+10 SWAP"}
               className="w-full h-20"
             />
           </div>
@@ -766,11 +755,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
 
         {/* Draggable Slider Component */}
         <div className="pt-6">
-          {!account ? (
-            <div className="text-center p-4 bg-red-900/20 border border-red-500/30 rounded-xl">
-              <p className="text-red-400 text-sm">Please connect your wallet to continue</p>
-            </div>
-          ) : isProcessingPayment ? (
+          {isProcessingPayment ? (
             <div className="text-center p-6 bg-blue-900/20 border border-blue-500/30 rounded-xl">
               <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
               <p className="text-blue-400 text-sm font-medium">Processing Payment...</p>

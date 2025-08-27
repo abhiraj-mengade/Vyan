@@ -232,6 +232,7 @@ function StationsView() {
     latitude: 12.9762,
     zoom: 10,
   });
+  const [routesVisible, setRoutesVisible] = useState(false);
 
   // Use demo static stations
   const [stations, setStations] = useState<Station[]>([
@@ -239,6 +240,12 @@ function StationsView() {
     { id: "2", name: "Koramangala", location: "Bengaluru", total: 18, charged: 5, status: "at-risk", coordinates: [77.6226, 12.9352] },
     { id: "3", name: "Whitefield", location: "Bengaluru", total: 22, charged: 0, status: "shortage", coordinates: [77.7500, 12.9698] },
   ] as any);
+
+  // Show AI routes after a short delay for prototype effect
+  useEffect(() => {
+    const timer = setTimeout(() => setRoutesVisible(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // AI-generated truck routes for rebalancing from centralized data
   const aiRoutes = AI_ROUTES;
@@ -429,16 +436,23 @@ function StationsView() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {aiRoutes.map((route) => (
-            <AIRouteCard 
-              key={route.id} 
-              route={route} 
-              isSelected={selectedRoute === route.id}
-              isDispatched={dispatchedRoutes.includes(route.id)}
-              onClick={() => handleRouteClick(route.id)}
-              onDispatch={() => handleDispatch(route.id)}
-            />
-          ))}
+          {routesVisible ? (
+            aiRoutes.map((route) => (
+              <AIRouteCard 
+                key={route.id} 
+                route={route} 
+                isSelected={selectedRoute === route.id}
+                isDispatched={dispatchedRoutes.includes(route.id)}
+                onClick={() => handleRouteClick(route.id)}
+                onDispatch={() => handleDispatch(route.id)}
+              />
+            ))
+          ) : (
+            <div className="col-span-2 flex items-center space-x-3 text-neutral-400 text-sm p-4 bg-custom-bg-shadow-dark rounded-xl border border-custom-bg-light/20">
+              <TbLoader2 className="w-5 h-5 animate-spin" />
+              <span>Generating AI routes...</span>
+            </div>
+          )}
         </div>
       </div>
 

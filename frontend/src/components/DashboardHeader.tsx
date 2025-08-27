@@ -39,7 +39,8 @@ export function DashboardHeader({
         </div>
       </div>
 
-      <div className="text-neutral-400 text-sm">Prototype</div>
+      {/* Removed Prototype label */}
+      <div />
     </div>
   );
 }
