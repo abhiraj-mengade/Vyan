@@ -18,7 +18,7 @@ export default function StationInterface() {
   const genId = () => (typeof crypto !== 'undefined' && (crypto as any).randomUUID ? (crypto as any).randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
   const [sessionState, setSessionState] = useState<SessionState>('idle');
   const [currentSession, setCurrentSession] = useState<SessionData | null>(null);
-  const [countdown, setCountdown] = useState(120);
+  const [countdown, setCountdown] = useState(90);
   const [showQRModal, setShowQRModal] = useState(false);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -28,7 +28,7 @@ export default function StationInterface() {
   
   const [availableBatteries, setAvailableBatteries] = useState(status.availableBatteries);
 
-  // Auto-refresh QR code every 2 minutes
+  // Auto-refresh QR code every 1.5 minutes
   useEffect(() => {
     if (sessionState === 'waiting' && currentSession) {
       const interval = setInterval(() => {
@@ -36,7 +36,7 @@ export default function StationInterface() {
           if (prev <= 1) {
             // Just refresh the QR, don't create new session
             refreshQRCode();
-            return 120;
+            return 90;
           }
           return prev - 1;
         });
@@ -247,7 +247,7 @@ export default function StationInterface() {
         expiresAt: Date.now() + (5 * 60 * 1000) // 5 minutes for session
       });
       setSessionState('waiting');
-      setCountdown(120);
+      setCountdown(90);
     } catch (error) {
       console.error('Failed to generate session:', error);
       alert('Failed to generate QR code. Please ensure the backend server is running.');
@@ -408,7 +408,7 @@ function StationStatus({
             <TbBatteryFilled className={`w-6 h-6 ${isActive ? 'text-green-400' : 'text-red-400'}`} />
             <span className="text-neutral-400 text-sm">Available Batteries</span>
           </div>
-          <span className="text-neutral-200 font-bold text-xl">{availableBatteries}</span>
+          <span className="text-neutral-200 font-bold text-lg sm:text-xl leading-tight">{availableBatteries}</span>
         </div>
         
 
@@ -524,7 +524,7 @@ function WaitingState({
         <div className="w-full bg-custom-bg-light rounded-full h-2 overflow-hidden">
           <div 
             className="bg-blue-500 h-2 rounded-full transition-all duration-1000 ease-linear"
-            style={{ width: `${(countdown / 30) * 100}%` }}
+            style={{ width: `${(countdown / 90) * 100}%` }}
           />
         </div>
       </div>

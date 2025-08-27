@@ -18,7 +18,7 @@ function StationInfoCard({ title, subtitle, className = "flex-1" }: {
 }) {
   return (
     <div className={`bg-custom-bg-shadow-dark rounded-lg shadow-neuro-dark-deep p-4 ${className} flex flex-col justify-center items-center text-center`}>
-      <div className="text-emerald-600 text-lg sm:text-xl mb-1 truncate">{subtitle}</div>
+      <div className="text-emerald-600 text-base sm:text-sm mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{subtitle}</div>
       <div className="text-neutral-400 text-xs font-medium">{title}</div>
     </div>
   );
@@ -506,7 +506,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
               {/* Right Half: Three Info Cards */}
               <div className="flex-1 space-y-3">
                 <StationInfoCard
-                  title="Available Batteries"
+                  title="Available Slots"
                   subtitle={`${station.availableBatteries || station.charged}/${station.totalSlots || station.total}`}
                   className="w-full h-20"
                 />
