@@ -1,4 +1,19 @@
-# Vyan — A De-PIN for EV Battery Swapping
+# ⚡️ Vyan — A De-PIN for EV Battery Swapping
+
+- [Vyan Whitepaper](Vyan_Whitepaper.pdf)
+
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Problem](#problem)
+- [Solution](#solution)
+- [System Flow](#system-flow)
+- [Learn More](#learn-more)
+- [Contributing](#contributing)
+- [Authors](#authors)
+
+## Overview
 
 **Vyan** is a decentralized battery-swapping network designed for dense urban environments in South Korea. It combines **IoT-enabled swap stations, an on-chain battery registry (De-PIN), and AI-driven inventory rebalancing**.  
 All payments and rewards are powered by a **KRW-pegged stablecoin**, making adoption seamless for local users.  
@@ -7,7 +22,7 @@ Vyan reduces **range anxiety** and **operating costs** for EV owners and fleet o
 
 ---
 
-## Problem
+## 🤔 Problem
 Despite incentives, EV adoption in Korea faces barriers:
 - Charging bottlenecks → Long charging times & costly infrastructure.  
 - Battery trust issues → No transparent audit trail for usage/valuation.  
@@ -17,7 +32,7 @@ Despite incentives, EV adoption in Korea faces barriers:
 
 ---
 
-## Solution
+## 💡 Solution
 Vyan addresses these challenges with a **decentralized, AI + blockchain–powered approach**:
 
 - **On-chain Identity (De-PIN):** Transparent battery + station metadata stored immutably.  
@@ -28,7 +43,7 @@ Vyan addresses these challenges with a **decentralized, AI + blockchain–powere
 
 ---
 
-## System Flow
+## 📊 System Flow
 
 ### 1. User Journey and Battery Swap
 ```mermaid
@@ -93,15 +108,11 @@ sequenceDiagram
     end
 ```
 
-## Learn More
-
-- [Vyan Whitepaper](Vyan_Whitepaper.pdf)
-
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a pull request.
 
-## Authors
+## ✍️ Authors
 
 - [Parth Mittal](https://github.com/mittal-parth)
 - [Abhiraj Mengade](https://github.com/abhiraj-mengade)
