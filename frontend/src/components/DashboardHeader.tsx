@@ -1,7 +1,7 @@
 "use client";
 
 import { TbX, TbMenu2 } from "react-icons/tb";
-import { ConnectWallet } from "./ConnectWallet";
+// Prototype: wallet removed
 
 interface DashboardHeaderProps {
   setSidebarOpen: (open: boolean) => void;
@@ -39,8 +39,7 @@ export function DashboardHeader({
         </div>
       </div>
 
-      {/* Connect Wallet */}
-      <ConnectWallet />
+      <div className="text-neutral-400 text-sm">Prototype</div>
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { TbBatteryFilled, TbWifi, TbWifiOff, TbQrcode, TbX, TbCheck, TbRefresh } from "react-icons/tb";
 import QRCode from "qrcode";
-import { v4 as uuidv4 } from "uuid";
 import { useStationStatus } from "@/hooks/useStationStatus";
 
 type SessionState = 'idle' | 'waiting' | 'authenticated' | 'processing' | 'success' | 'error';
@@ -16,6 +15,7 @@ interface SessionData {
 }
 
 export default function StationInterface() {
+  const genId = () => (typeof crypto !== 'undefined' && (crypto as any).randomUUID ? (crypto as any).randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
   const [sessionState, setSessionState] = useState<SessionState>('idle');
   const [currentSession, setCurrentSession] = useState<SessionData | null>(null);
   const [countdown, setCountdown] = useState(120);
@@ -169,7 +169,7 @@ export default function StationInterface() {
       // Local demo QR payload with 5-min expiry
       const payload = {
         stationId,
-        token: uuidv4(),
+        token: genId(),
         expiresAt: Date.now() + 5 * 60 * 1000
       };
       const qrString = JSON.stringify(payload);
@@ -233,7 +233,7 @@ export default function StationInterface() {
   };
 
   const generateNewSession = async () => {
-    const sessionId = uuidv4();
+    const sessionId = genId();
     
     try {
       // Clean up any old sessions first

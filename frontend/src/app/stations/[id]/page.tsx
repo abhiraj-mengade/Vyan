@@ -59,6 +59,24 @@ export default function StationDetailPage({ params }: { params: { id: string } }
   const qrScannerRef = useRef<any | null>(null);
   const isDragging = useRef(false);
 
+  // Cleanup camera on unmount (must be before any conditional returns)
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  // Cleanup global listeners on unmount (must be before any conditional returns)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
   // Get station data from centralized data
   const station = getStationByNumericId(parseInt(params.id));
   
@@ -226,8 +244,8 @@ export default function StationDetailPage({ params }: { params: { id: string } }
   const checkUserBalance = async () => {
     // prototype: return fixed balance
     const balance = BigInt("5000000000000000000"); // 5 KRW units (display scaled)
-    setUserBalance(balance);
-    return balance;
+        setUserBalance(balance);
+        return balance;
   };
 
   const loadStationDetails = async (stationId: string) => {
@@ -266,13 +284,13 @@ export default function StationDetailPage({ params }: { params: { id: string } }
       return;
     }
 
-    setIsProcessingPayment(true);
+      setIsProcessingPayment(true);
     await new Promise(r => setTimeout(r, 1200));
     setUserBatteryId(BigInt(202));
     if (scannedStationId) await loadStationDetails(scannedStationId);
-    setCameraError(null);
-    setShowRegisterForm(false);
-    setIsProcessingPayment(false);
+      setCameraError(null);
+      setShowRegisterForm(false);
+      setIsProcessingPayment(false);
   };
 
   const handleSwapPayment = async () => {
@@ -340,12 +358,9 @@ export default function StationDetailPage({ params }: { params: { id: string } }
     }
   };
 
-  // Cleanup camera on unmount
-  useEffect(() => {
-    return () => {
-      stopCamera();
-    };
-  }, []);
+  
+
+  
 
   const handleMouseDown = (e: React.MouseEvent) => {
     isDragging.current = true;
@@ -416,14 +431,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
     document.removeEventListener('touchend', handleTouchEnd);
   };
 
-  useEffect(() => {
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, []);
+  
 
   // Show QR Scanner Interface
   if (!hasScanned) {
@@ -537,8 +545,8 @@ export default function StationDetailPage({ params }: { params: { id: string } }
                       <p className="text-custom-text-light/80 text-sm mb-2">
                         Please add funds to continue. Prototype uses KRW.
                       </p>
-                    </div>
-                  )}
+                          </div>
+                        )}
                 </div>
               )}
             </div>
@@ -753,7 +761,7 @@ export default function StationDetailPage({ params }: { params: { id: string } }
           <PaymentSuccess 
             transactionHash={transactionHash}
             swapFee={finalSwapFee}
-            stationId={scannedStationId}
+            stationId={scannedStationId ?? undefined}
             batteryId={userBatteryId?.toString()}
           />
         </div>

@@ -18,20 +18,20 @@ export function Header({
 
       
       {/* Logo and Title */}
-      <Link href={homeHref} className="flex items-center gap-3">
+      <Link href={homeHref} className="flex items-center gap-4">
         <img 
           src="/logo.png" 
           alt="Vyan Logo" 
-          className="h-8 w-auto"
+          className="h-10 w-auto"
         />
         <div className="leading-tight">
-          <p className="text-neutral-400 text-medium font-medium">{title}</p>
-          <p className="text-neutral-500 text-xs">비얀</p>
+          <p className="text-neutral-200 text-lg font-semibold">{title}</p>
+          <p className="text-neutral-400 text-sm">비얀</p>
         </div>
       </Link>
       
       {/* Prototype: no wallet */}
-      <div className="text-neutral-500 text-xs">Prototype</div>
+      <div className="text-neutral-300 text-sm">Prototype</div>
     </div>
   );
 }

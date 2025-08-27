@@ -17,6 +17,16 @@ export default function PaymentSuccess({
   const [isVisible, setIsVisible] = useState(false);
   const [circleScale, setCircleScale] = useState(0);
   const [tickOpacity, setTickOpacity] = useState(0);
+  
+  // Compute friendly display defaults for prototype
+  const computedTxId = transactionHash 
+    ? `SWP-${transactionHash.replace(/[^a-zA-Z0-9]/g, '').slice(-12)}` 
+    : `SWP-${Date.now().toString().slice(-10)}`;
+  const computedAmount = swapFee 
+    ? `${Math.max(1, Math.round(Number(swapFee) / 1e18)).toString()} KRW` 
+    : `1,500 KRW`;
+  const computedStationId = stationId || '1';
+  const computedBatteryId = batteryId ? `#${batteryId}` : '#202';
 
   useEffect(() => {
     // Trigger animations on mount
@@ -89,32 +99,20 @@ export default function PaymentSuccess({
               <div className="flex justify-between items-center">
                 <span className="text-neutral-400 text-sm">Transaction ID</span>
                 <span className="text-emerald-400 text-sm font-mono">
-                  {transactionHash ? 
-                    `#${transactionHash.slice(0, 8)}...${transactionHash.slice(-6)}` : 
-                    `#SWP-${Date.now().toString().slice(-6)}`
-                  }
+                  {computedTxId}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-neutral-400 text-sm">Amount Paid</span>
-                <span className="text-emerald-400 text-sm font-medium">
-                  {swapFee ? 
-                    `${(Number(swapFee) / 1e18).toFixed(2)} KRW` : 
-                    '0.00 KRW'
-                  }
-                </span>
+                <span className="text-emerald-400 text-sm font-medium">{computedAmount}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-neutral-400 text-sm">Station ID</span>
-                <span className="text-emerald-400 text-sm font-medium">
-                  {stationId || 'Unknown'}
-                </span>
+                <span className="text-emerald-400 text-sm font-medium">{computedStationId}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-neutral-400 text-sm">Battery ID</span>
-                <span className="text-emerald-400 text-sm font-medium">
-                  {batteryId ? `#${batteryId}` : 'Unknown'}
-                </span>
+                <span className="text-emerald-400 text-sm font-medium">{computedBatteryId}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-neutral-400 text-sm">Status</span>
