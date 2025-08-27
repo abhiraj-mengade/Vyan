@@ -1,7 +1,8 @@
 # ⚡️ Vyan — A De-PIN for EV Battery Swapping
 
-- [Whitepaper](Vyan_Whitepaper.pdf)
+- [Whitepaper](https://vyan-energy.vercel.app/Vyan_Whitepaper.pdf)
 - [Pitch Deck](https://www.canva.com/design/DAGxPu4Eaqo/VcGGmNVwWiRtqdBv_y-ZtA/view?utm_content=DAGxPu4Eaqo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h64bea47428)
+- [Demo Video](https://youtu.be/EAZyaGXbmcM)
 
 
 ## Table of Contents
